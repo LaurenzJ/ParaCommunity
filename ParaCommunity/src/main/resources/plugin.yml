@@ -1,0 +1,8 @@
+name: ParaCommunity
+version: ${project.version}
+main: com.ichlebimaldi.paracommunity.ParaCommunity
+api-version: 1.16
+authors: [ IchLebImAldi ]
+description: Community Plugin for Paralon Server
+commands:
+  claim:
