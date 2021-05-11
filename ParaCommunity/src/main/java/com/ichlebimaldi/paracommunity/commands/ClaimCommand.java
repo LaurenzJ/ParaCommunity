@@ -22,8 +22,6 @@ public class ClaimCommand implements CommandExecutor {
         itemStack.setItemMeta(itemMeta);
         inv.setItem(0, itemStack);
         inv.setHeldItemSlot(0);
-        Location loc = player.getLocation();
-        player.sendMessage(loc.toString());
         return false;
     }
 }
