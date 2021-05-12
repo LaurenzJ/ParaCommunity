@@ -1,7 +1,9 @@
 package com.ichlebimaldi.paracommunity;
 
 import com.ichlebimaldi.paracommunity.commands.ClaimCommand;
-import com.ichlebimaldi.paracommunity.listeners.ClaimEvent;
+import com.ichlebimaldi.paracommunity.commands.CommunityCommand;
+import com.ichlebimaldi.paracommunity.commands.TestCommand;
+import com.ichlebimaldi.paracommunity.listeners.*;
 import com.ichlebimaldi.paracommunity.sql.MySQL;
 import com.ichlebimaldi.paracommunity.sql.SQLGetter;
 import org.bukkit.Bukkit;
@@ -26,12 +28,18 @@ public final class ParaCommunity extends JavaPlugin {
 
         if(sql.isConnected()){
             Bukkit.getLogger().info("Database is connected");
-            data.createTable();
+            data.createUsersTable();
+            data.createCommunitesTable();
+            data.createUsersTable();
         }
 
 
         getCommand("claim").setExecutor(new ClaimCommand());
+        getCommand("community").setExecutor(new CommunityCommand(this));
+        getCommand("test").setExecutor(new TestCommand(this));
+
         new ClaimEvent(this);
+        new JoinEvent(this);
 
     }
 

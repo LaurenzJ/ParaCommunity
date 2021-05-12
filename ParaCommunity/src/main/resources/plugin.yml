@@ -6,3 +6,5 @@ authors: [ IchLebImAldi ]
 description: Community Plugin for Paralon Server
 commands:
   claim:
+  community:
+  test:
