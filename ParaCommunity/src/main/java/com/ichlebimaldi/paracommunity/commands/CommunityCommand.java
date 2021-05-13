@@ -1,6 +1,8 @@
 package com.ichlebimaldi.paracommunity.commands;
 
 import com.ichlebimaldi.paracommunity.ParaCommunity;
+import com.ichlebimaldi.paracommunity.communities.Community;
+import com.ichlebimaldi.paracommunity.communities.Guild;
 import com.ichlebimaldi.paracommunity.sql.SQLGetter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,13 +24,18 @@ public class CommunityCommand implements CommandExecutor {
             Player player = (Player) sender;
 
             if(args.length <= 1) {
-                sender.sendMessage("§a/community create <CommunityName>");
+                sender.sendMessage(ParaCommunity.PREFIX + "§a/community create <CommunityName>");
                 return true;
             }
 
             if(args[0].equalsIgnoreCase("create")){
-                data.createCommunity(player, args[1]);
-                player.sendMessage("§aUse /claim to claim your first area!");
+                Guild community = new Guild(args[1]);
+                if(data.createCommunity(player, community)){
+                    player.sendMessage(ParaCommunity.PREFIX + "§aCreated Community");
+                } else {
+                    player.sendMessage(ParaCommunity.PREFIX + "§cName already taken!");
+                }
+
             }
 
 

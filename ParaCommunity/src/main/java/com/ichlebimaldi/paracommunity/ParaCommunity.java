@@ -13,8 +13,10 @@ import java.sql.SQLException;
 
 public final class ParaCommunity extends JavaPlugin {
 
-    public MySQL sql;
-    public SQLGetter data;
+    public static MySQL sql;
+    public static SQLGetter data;
+
+    public static final String PREFIX = "§7[§3Para§6Community§7]";
 
     @Override
     public void onEnable() {
@@ -47,4 +49,11 @@ public final class ParaCommunity extends JavaPlugin {
     public void onDisable() {
         sql.disconnect();
     }
+
+    public ParaCommunity getPlugin(){
+        return this;
+    }
+
 }
+
+

@@ -1,6 +1,7 @@
 package com.ichlebimaldi.paracommunity.commands;
 
 import com.ichlebimaldi.paracommunity.ParaCommunity;
+import com.ichlebimaldi.paracommunity.communities.Community;
 import com.ichlebimaldi.paracommunity.sql.SQLGetter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,8 +21,9 @@ public class TestCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player) {
             Player player = (Player) sender;
+            Community community = data.getCommunity(player);
 
-            player.sendMessage(data.getCommunityMembers("Temp2").toString());
+            player.sendMessage(data.getCommunityMembers(community).toString());
         }
         return false;
     }

@@ -1,6 +1,9 @@
 package com.ichlebimaldi.paracommunity.listeners;
 
 import com.ichlebimaldi.paracommunity.ParaCommunity;
+import com.ichlebimaldi.paracommunity.claim.Area;
+import com.ichlebimaldi.paracommunity.communities.Community;
+import com.ichlebimaldi.paracommunity.communities.Guild;
 import com.ichlebimaldi.paracommunity.sql.SQLGetter;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,104 +21,77 @@ import org.bukkit.inventory.ItemStack;
 public class ClaimEvent implements Listener {
 
     private SQLGetter data;
+    private ParaCommunity plugin;
 
     public ClaimEvent(ParaCommunity plugin) {
-        data = new SQLGetter(plugin);
+        this.plugin = plugin;
+        data = new SQLGetter(this.plugin);
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    @EventHandler
-    public void onPlayerClicked(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        String communityName = data.getCommunity(player);
-        Action action = event.getAction();
-        ItemStack item = event.getItem();
-
-        Block block = player.getTargetBlock(null, 100);
-        if(item != null && item.getItemMeta().getDisplayName().equals("§5Claim")){
-            if (action.equals(Action.LEFT_CLICK_BLOCK)) {
-                if(data.getFirstLocation("Temp2") != null) {
-                    player.sendBlockChange(data.getFirstLocation(communityName), data.getFirstLocation(communityName).getBlock().getBlockData().getMaterial(), (byte) 0);
-                    player.sendBlockChange(data.getSecondLocation(communityName), data.getSecondLocation(communityName).getBlock().getBlockData().getMaterial(), (byte) 0);
-
-
-
-
-
-                    data.addFirstLocation(block.getLocation(), player, communityName);
-
-                } else {
-                    data.addFirstLocation(block.getLocation(), player, communityName);
-                }
-                event.setCancelled(true);
-
-            } else if (action.equals(Action.RIGHT_CLICK_BLOCK)) {
-                double bef_x1 = data.getFirstLocation(communityName).getX();
-                double bef_z1 = data.getFirstLocation(communityName).getZ();
-                double bef_x2 = data.getSecondLocation(communityName).getX();
-                double bef_z2 = data.getSecondLocation(communityName).getZ();
-
-                double bef_x3 = bef_x1;
-                double bef_z3 = bef_z2;
-                Location loc3 = new Location(block.getWorld(), bef_x3, 71,bef_z3);
-
-
-                double bef_x4 = bef_x2;
-                double bef_z4 = bef_z1;
-                Location loc4 = new Location(block.getWorld(), bef_x4, 71,bef_z4);
-
-
-
-                if(data.getFirstLocation(communityName) != null) {
-                    double distance = loc4.distance(data.getFirstLocation(communityName));
-                    player.sendMessage("Distance loc4 - loc1: " + distance);
-
-                    player.sendBlockChange(new Location(player.getWorld(), bef_x3, 71, bef_z3), Material.BLUE_CONCRETE, (byte) 0);
-                    player.sendBlockChange(new Location(player.getWorld(), bef_x4, 71, bef_z4), Material.BLUE_CONCRETE, (byte) 0);
-
-                    player.sendBlockChange(data.getFirstLocation(communityName), data.getFirstLocation(communityName).getBlock().getBlockData().getMaterial(),(byte) 0);
-                    player.sendBlockChange(data.getSecondLocation(communityName), data.getSecondLocation(communityName).getBlock().getBlockData().getMaterial(),(byte) 0);
-                    data.addSecondLocation(block.getLocation(), loc3, loc4, player, communityName);
-                } else {
-                    data.addSecondLocation(block.getLocation(), loc3, loc4, player, communityName);
-                }
-
-
-                event.setCancelled(true);
-            }
-        }
-
-    }
-
-    @EventHandler
-    public void onPlayerItemHeldEvent(PlayerItemHeldEvent event) {
-        Player player = event.getPlayer();
-        Inventory inv = player.getInventory();
-        ItemStack item = inv.getItem(event.getNewSlot());
-        if (item != null && item.getItemMeta().getDisplayName().equals("§5Claim")){
-            player.sendMessage(data.getFirstLocation("Temp2").toString());
-            player.sendBlockChange(data.getFirstLocation("Temp2"), Material.RED_STAINED_GLASS, (byte) 14); //14 --> color: red;
-            player.sendBlockChange(data.getSecondLocation("Temp2"), Material.RED_STAINED_GLASS, (byte) 14); //14 --> color: red;
-        } else {
-            player.sendBlockChange(data.getFirstLocation("Temp2"), data.getFirstLocation("Temp2").getBlock().getBlockData().getMaterial(),(byte) 0);
-            player.sendBlockChange(data.getSecondLocation("Temp2"), data.getSecondLocation("Temp2").getBlock().getBlockData().getMaterial(),(byte) 0);
-        }
-
-
-    }
-
-
-
 //    @EventHandler
-//    public void onPlayerDropItem(PlayerDropItemEvent event) {
-//        ItemStack item = event.getItemDrop().getItemStack();
+//    public void onPlayerClicked(PlayerInteractEvent event) {
 //        Player player = event.getPlayer();
-//        Inventory inv = player.getInventory();
+//        Community community = data.getCommunity(player);
+//        Action action = event.getAction();
+//        ItemStack item = event.getItem();
 //
-//        if(item.getItemMeta().getDisplayName().equals("§5Claim")) {
-//            inv.removeItem(item);
+//        Block block = player.getTargetBlock(null, 100);
+//        if(item != null && item.getItemMeta().getDisplayName().equals("§5Claim")){
+//            Area area = new Area(plugin, community);
+//
+//            if (action.equals(Action.LEFT_CLICK_BLOCK)) {
+//
+//                area.setLoc1(block.getLocation(), player);
+//                player.sendBlockChange(data.getFirstLocation(community), data.getFirstLocation(community).getBlock().getBlockData().getMaterial(),(byte) 0);
+//
+//            } else if (action.equals(Action.RIGHT_CLICK_BLOCK)) {
+//
+//                area.setLoc2(block.getLocation(), player);
+//                player.sendBlockChange(data.getSecondLocation(community), data.getSecondLocation(community).getBlock().getBlockData().getMaterial(),(byte) 0);
+//
+//            }
+//
 //            event.setCancelled(true);
 //        }
+//    }
+
+//    @EventHandler
+//    public void onPlayerItemHeldEvent(PlayerItemHeldEvent event) {
+//        Player player = event.getPlayer();
+//        Community community = data.getCommunity(player);
+//        Inventory inv = player.getInventory();
+//        ItemStack item = inv.getItem(event.getNewSlot());
+//        if (item != null && item.getItemMeta().getDisplayName().equals("§5Claim")){
+//            player.sendMessage(data.getFirstLocation(community).toString());
+//            for(int i = 0; i< 256; i++) {
+//                Location loc1 = new Location(data.getWorld(community), data.getFirstLocation(community).getX(),i,data.getFirstLocation(community).getZ());
+//                Location loc2 = new Location(data.getWorld(community), data.getSecondLocation(community).getX(),i,data.getSecondLocation(community).getZ());
+//                Location test = new Location(data.getWorld(community), data.getFirstLocation(community).getX(), loc1.getWorld().getHighestBlockAt(loc1).getY(), data.getFirstLocation(community).getZ());
+//                Location test2 = new Location(data.getWorld(community), data.getSecondLocation(community).getX(), loc1.getWorld().getHighestBlockAt(loc1).getY(), data.getSecondLocation(community).getZ());
+//                test.setY(test.getY()+1);
+//                test2.setY(test2.getY()+1);
+//                player.sendBlockChange(test, Material.RED_STAINED_GLASS,(byte) 14);
+//                player.sendBlockChange(test2, Material.RED_STAINED_GLASS,(byte) 14);
+//            }
+//
+//
+//        } else {
+//            Location loc1 = new Location(data.getWorld(community), data.getFirstLocation(community).getX(),0,data.getFirstLocation(community).getZ());
+//            Location loc2 = new Location(data.getWorld(community), data.getSecondLocation(community).getX(),0,data.getSecondLocation(community).getZ());
+//
+//            Material material1 = loc1.getBlock().getBlockData().getMaterial();
+//            Material material2 = loc2.getBlock().getBlockData().getMaterial();
+//
+//            Location test = new Location(data.getWorld(community), data.getFirstLocation(community).getX(), loc1.getWorld().getHighestBlockAt(loc1).getY(), data.getFirstLocation(community).getZ());
+//            Location test2 = new Location(data.getWorld(community), data.getSecondLocation(community).getX(), loc1.getWorld().getHighestBlockAt(loc1).getY(), data.getSecondLocation(community).getZ());
+//            test.setY(test.getY()+1);
+//            test2.setY(test2.getY()+1);
+//
+//            player.sendBlockChange(test, data.getFirstLocation(community).getBlock().getBlockData().getMaterial(),(byte) 0);
+//            player.sendBlockChange(test2, data.getSecondLocation(community).getBlock().getBlockData().getMaterial(),(byte) 0);
+//        }
+//
 //
 //    }
 }

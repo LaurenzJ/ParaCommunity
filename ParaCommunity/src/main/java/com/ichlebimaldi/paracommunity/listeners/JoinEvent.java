@@ -19,5 +19,6 @@ public class JoinEvent implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
         data.createUser(player);
+
     }
 }
